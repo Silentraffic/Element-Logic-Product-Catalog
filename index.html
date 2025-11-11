@@ -3,23 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Catalog</title>
+  <title>Product Catalog with Cart</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
-    .modal-content { margin: 5% auto; display: block; max-width: 80%; cursor: pointer; }
-    .close { position: absolute; top: 20px; right: 35px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer; }
+    /* Modal Styles */
+    .modal { 
+      display: none; 
+      position: fixed; 
+      z-index: 200; /* higher than cart */
+      left: 0; 
+      top: 0; 
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.8); 
+    }
+    .modal-content { 
+      margin: 5% auto; 
+      display: block; 
+      max-width: 80%; 
+      cursor: pointer; 
+      z-index: 201; 
+    }
+    .close { 
+      position: absolute; 
+      top: 20px; 
+      right: 35px; 
+      color: #fff; 
+      font-size: 40px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      z-index: 202; 
+    }
     .thumbs { display: flex; justify-content: center; margin-top: 10px; }
     .thumbs img { width: 60px; height: 60px; object-fit: cover; margin: 0 5px; cursor: pointer; border: 2px solid transparent; }
     .thumbs img.active { border-color: #71140F; }
+
+    /* Cart Styles */
+    .cart-window { 
+      position: fixed; 
+      top: 20px; 
+      right: 20px; 
+      width: 350px; 
+      max-height: 80vh; 
+      overflow-y: auto; 
+      background: white; 
+      border: 2px solid #71140F; 
+      border-radius: 10px; 
+      padding: 20px; 
+      z-index: 100; 
+    }
+    .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .cart-item span { flex: 1; }
+    .qty-input { width: 50px; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
+
   <!-- Header -->
   <header class="bg-[#71140F] shadow-md py-6 mb-8">
     <div class="max-w-6xl mx-auto flex items-center justify-between px-6">
       <div class="flex items-center">
-        <img src="Images/element-logo.png" alt="Element Logic AS Logo" class="h-28 w-28 object-contain mr-4">
+        <img src="element-logo.png" alt="Element Logic AS Logo" class="h-28 w-28 object-contain mr-4">
         <h1 class="text-2xl font-bold text-white">Element Logic AS</h1>
       </div>
       <p class="text-gray-200 hidden sm:block">Element Logic AS - Product Catalog Offers</p>
@@ -33,43 +78,46 @@
 
       <!-- Product 1 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
-        <img src="Images/AS-Bins-330mm-top.jpg" alt="AutoStore Bin 330" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/AS-Bins-330mm-top.jpg','Images/AS-Bins-330mm-longside.jpg','Images/AS-Bins-330mm-shortside.jpg'])">
+        <img src="images/AS-Bins-330mm-top.jpg" alt="AutoStore Bin 330" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['images/AS-Bins-330mm-top.jpg','images/AS-Bins-330mm-longside.jpg','images/AS-Bins-330mm-shortside.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">AutoStore Bin 330</h3>
-          <p class="text-gray-600 text-sm mb-2">330 mm Polymer Compount 100% recycled</p>
+          <p class="text-gray-600 text-sm mb-2">330 mm Polymer Compound 100% recycled</p>
           <p class="text-gray-500 text-sm mb-4">Size: 330x330x330 mm | Color: Gray | Material: Recycled polymer</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 250,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-1" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 250</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('AutoStore Bin 330', 250, document.getElementById('qty-1').value)">Add to Cart</button>
         </div>
       </div>
 
       <!-- Product 2 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
-        <img src="Images/425-BinProduct-longside.jpg" alt="AutoStore Bin 425" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/425-BinProduct-longside.jpg'])">
+        <img src="images/425-BinProduct-longside.jpg" alt="AutoStore Bin 425" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['images/425-BinProduct-longside.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">AutoStore Bin 425</h3>
-          <p class="text-gray-600 text-sm mb-2">425 mm Polymer Compount 100% recycled</p>
+          <p class="text-gray-600 text-sm mb-2">425 mm Polymer Compound 100% recycled</p>
           <p class="text-gray-500 text-sm mb-4">Size: 425x425x425 mm | Color: Gray | Material: Recycled polymer</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 350,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-2" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 350</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('AutoStore Bin 425', 350, document.getElementById('qty-2').value)">Add to Cart</button>
         </div>
       </div>
 
-      <!-- Product 3 -->
+       <!-- Product 3 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
         <img src="Images/AS-Bins-220mm-top.jpg" alt="AutoStore Bin 220" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/AS-Bins-220mm-top.jpg','Images/AS-Bins-220mm-longside.jpg','Images/AS-Bins-220mm-shortside.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">AutoStore Bin 220</h3>
-          <p class="text-gray-600 text-sm mb-2">220 mm Polymer Compount 100% recycled</p>
+          <p class="text-gray-600 text-sm mb-2">220 mm Polymer Compound 100% recycled</p>
           <p class="text-gray-500 text-sm mb-4">Size: 220x220x220 mm | Color: Gray | Material: Recycled polymer</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 150,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-3" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 150</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('AutoStore Bin 220', 150, document.getElementById('qty-3').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -80,10 +128,11 @@
           <h3 class="text-lg font-semibold mb-2">ReFlex 330</h3>
           <p class="text-gray-600 text-sm mb-2">Collapsible Inner Bin for 330 mm AutoStore Bin</p>
           <p class="text-gray-500 text-sm mb-4">Size: 330x330x330 mm | Color: Gray | Material: Recycled polymer</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 200,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-4" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 200</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('ReFlex 330', 200, document.getElementById('qty-4').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -94,10 +143,11 @@
           <h3 class="text-lg font-semibold mb-2">RexRoth Port Table</h3>
           <p class="text-gray-600 text-sm mb-2">Standard RexRoth Port Working Table</p>
           <p class="text-gray-500 text-sm mb-4">Size: 1200x800x750 mm | Color: Blue | Material: Steel</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 1859,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-5" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 1,859</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('RexRoth Port Table', 1859, document.getElementById('qty-5').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -108,10 +158,11 @@
           <h3 class="text-lg font-semibold mb-2">ThinkVision Lenovo P27q-20</h3>
           <p class="text-gray-600 text-sm mb-2">PC Screen</p>
           <p class="text-gray-500 text-sm mb-4">Size: 150x70x70 mm | Color: Black | Material: Plastic</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 5404,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-6" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 5,404</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('ThinkVision Lenovo P27q-20', 5404, document.getElementById('qty-6').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -119,13 +170,14 @@
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
         <img src="Images/CarouselAI_port_ELE_01006.jpg" alt="CarouselAI Port" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/CarouselAI_port_ELE_01006.jpg'])">
         <div class="p-5">
-          <h3 class="text-lg font-semibold mb-2">CarouselAI port</h3>
-          <p class="text-gray-600 text-sm mb-2">Robotic piece picking from Autostore CarouselAI port</p>
+          <h3 class="text-lg font-semibold mb-2">CarouselAI Port</h3>
+          <p class="text-gray-600 text-sm mb-2">Robotic piece picking from AutoStore CarouselAI Port</p>
           <p class="text-gray-500 text-sm mb-4">Robotic Piece Picking | Color: Black & Red | Material: Metal/Plastic</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 400,000 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-7" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 400,000</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('CarouselAI Port', 400000, document.getElementById('qty-7').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -136,24 +188,26 @@
           <h3 class="text-lg font-semibold mb-2">Carousel Port</h3>
           <p class="text-gray-600 text-sm mb-2">AutoStore Carousel Port</p>
           <p class="text-gray-500 text-sm mb-4">AutoStore Port Picking | Color: Black, Red & Grey</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 400,000 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-8" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 400,000</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('Carousel Port', 400000, document.getElementById('qty-8').value)">Add to Cart</button>
         </div>
       </div>
-  
-  <!-- Product 9 -->
+
+      <!-- Product 9 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
         <img src="Images/R5-Pro_7.jpg" alt="R5 Pro Robot" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/R5-Pro_7.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">R5 Pro Robot</h3>
           <p class="text-gray-600 text-sm mb-2">AutoStore R5 Pro Robot</p>
           <p class="text-gray-500 text-sm mb-4">AutoStore R5 Pro Robot | Color: Black & Red</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 400,000 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-9" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 400,000</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('R5 Pro Robot', 400000, document.getElementById('qty-9').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -164,25 +218,26 @@
           <h3 class="text-lg font-semibold mb-2">R5 Robot</h3>
           <p class="text-gray-600 text-sm mb-2">AutoStore R5 Robot</p>
           <p class="text-gray-500 text-sm mb-4">AutoStore R5 Robot | Color: Black & Red</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 350,000 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-10" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 350,000</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('R5 Robot', 350000, document.getElementById('qty-10').value)">Add to Cart</button>
         </div>
       </div>
 
       <!-- Product 11 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
-        <img src="Images/AutoStore-system-natural-slotting.jpg" alt="Element Logic Optimizing" class="w-full h-56 object-cover cursor-pointer" 
-             onclick="openGallery(['Images/AutoStore-system-natural-slotting.jpg','Images/warehouse-performance_Unify_Analytics-dashboard-p-2600.jpg','Images/Unify_Analytics_-_System_(3D_image).jpg','Images/bin_presentation.jpg','Images/router.jpg','Images/uptime.jpg'])">
+        <img src="Images/AutoStore-system-natural-slotting.jpg" alt="Element Logic Optimizing" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/AutoStore-system-natural-slotting.jpg','Images/warehouse-performance_Unify_Analytics-dashboard-p-2600.jpg','Images/Unify_Analytics_-_System_(3D_image).jpg','Images/bin_presentation.jpg','Images/router.jpg','Images/uptime.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">Element Logic System Optimizing</h3>
           <p class="text-gray-600 text-sm mb-2">System Optimizing</p>
           <p class="text-gray-500 text-sm mb-4"></p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 50,000 - 85,000 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-11" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 50,000</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('Element Logic System Optimizing', 50000, document.getElementById('qty-11').value)">Add to Cart</button>
         </div>
       </div>
 
@@ -193,31 +248,41 @@
           <h3 class="text-lg font-semibold mb-2">AutoStore Simulation</h3>
           <p class="text-gray-600 text-sm mb-2">Element Logic AutoStore Simulation</p>
           <p class="text-gray-500 text-sm mb-4">Simulation of your AutoStore Grid. Find bottlenecks, hidden performance enhancers, and verify robot needs.</p>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-bold text-gray-900">NOK 11,449,00 kr</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-12" value="1" min="1" class="qty-input border rounded px-2 py-1">
+            <span class="text-xl font-bold text-gray-900">NOK 11,449</span>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('AutoStore Simulation', 11449, document.getElementById('qty-12').value)">Add to Cart</button>
         </div>
       </div>
 
       <!-- Product 13 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
-        <img src="Images/Grid-P100-Dark-front__00032.jpg" alt="PIO Grid" class="w-full h-56 object-cover cursor-pointer" 
-             onclick="openGallery(['Images/Grid-P100-Dark-front__00032.jpg','Images/Grid-P100-Dark-front__00006.jpg','Images/thumbnail_All-systems_2025_02.jpg','Images/pio_foto_(30_of_82).jpg','Images/pio_foto_(20_of_82).jpg','Images/pio_foto_(61_of_82).jpg','Images/pio_foto_(26_of_82).jpg'])">
+        <img src="Images/Grid-P100-Dark-front__00032.jpg" alt="PIO Grid" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/Grid-P100-Dark-front__00032.jpg','Images/Grid-P100-Dark-front__00006.jpg','Images/thumbnail_All-systems_2025_02.jpg','Images/pio_foto_(30_of_82).jpg','Images/pio_foto_(20_of_82).jpg','Images/pio_foto_(61_of_82).jpg','Images/pio_foto_(26_of_82).jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">PIO</h3>
           <p class="text-gray-600 text-sm mb-2">PIO empowered by Element Logic</p>
           <p class="text-gray-500 text-sm mb-4">Perfect for startups: big dreams, small spaces. Outgrown your garage but don’t need a full warehouse yet.</p>
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <input type="number" id="qty-13" value="1" min="1" class="qty-input border rounded px-2 py-1">
             <span class="text-xl font-bold text-gray-900">Price on enquiry</span>
-            <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b]">Add to Cart</button>
           </div>
+          <button class="bg-[#71140F] text-white px-4 py-2 rounded-xl hover:bg-[#5a0f0b] w-full" onclick="addToCart('PIO', 0, document.getElementById('qty-13').value)">Add to Cart</button>
         </div>
       </div>
 
+
     </div>
   </main>
-  
+
+  <!-- Cart Window -->
+  <div class="cart-window" id="cartWindow">
+    <h3 class="text-lg font-semibold mb-2">Shopping Cart</h3>
+    <div id="cartItems"></div>
+    <p class="font-bold mt-2">Total: <span id="cartTotal">0 NOK</span></p>
+    <button class="bg-red-500 text-white px-4 py-2 rounded-xl mt-2 w-full" onclick="clearCart()">Clear Cart</button>
+    <button class="bg-green-600 text-white px-4 py-2 rounded-xl mt-2 w-full" onclick="sendInquiry()">Send Inquiry</button>
+  </div>
 
   <!-- Image Gallery Modal -->
   <div id="galleryModal" class="modal">
@@ -229,6 +294,7 @@
   <script>
     let galleryImages = [];
     let currentIndex = 0;
+    let cart = [];
 
     function openGallery(images) {
       galleryImages = images;
@@ -241,7 +307,7 @@
         const thumb = document.createElement('img');
         thumb.src = src;
         if(index === 0) thumb.classList.add('active');
-        thumb.onclick = () => { setGalleryIndex(index); };
+        thumb.onclick = () => setGalleryIndex(index);
         thumbsContainer.appendChild(thumb);
       });
     }
@@ -266,17 +332,66 @@
 
     document.addEventListener('keydown', function(e) {
       if(document.getElementById('galleryModal').style.display === 'block') {
-        if(e.key === 'ArrowRight') { nextImage(); }
-        if(e.key === 'ArrowLeft') { prevImage(); }
+        if(e.key === 'ArrowRight') nextImage();
+        if(e.key === 'ArrowLeft') prevImage();
       }
     });
+
+    // --- CART FUNCTIONS ---
+    function addToCart(name, price, qty) {
+      qty = parseInt(qty);
+      if(!qty || qty <= 0) return alert('Please enter a valid quantity');
+      const existing = cart.find(item => item.name === name);
+      if(existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({name, price, qty});
+      }
+      updateCartDisplay();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartDisplay();
+    }
+
+ function updateCartDisplay() {
+  const cartItemsEl = document.getElementById('cartItems');
+  cartItemsEl.innerHTML = '';
+  let total = 0;
+  cart.forEach((item, idx) => {
+    total += item.price * item.qty;
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `<span>${item.name} x ${item.qty}</span>
+                     <span>${(item.price * item.qty).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} NOK</span>
+                     <button class='bg-red-400 text-white px-2 py-1 rounded' onclick='removeFromCart(${idx})'>Remove</button>`;
+    cartItemsEl.appendChild(div);
+  });
+  document.getElementById('cartTotal').textContent = `${total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} NOK`;
+}
+
+    function sendInquiry() {
+      if(cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      let emailBody = "Hello,%0D%0A%0D%0AI would like to inquire about the following products:%0D%0A%0D%0A";
+      cart.forEach(item => {
+        emailBody += `${item.name} - Qty: ${item.qty} - Price per unit: ${item.price} NOK%0D%0A`;
+      });
+      emailBody += `%0D%0ATotal: ${document.getElementById('cartTotal').textContent}%0D%0A%0D%0AThank you.`;
+
+      const mailtoLink = `mailto:your-email@example.com?subject=${encodeURIComponent('Product Inquiry')}&body=${emailBody}`;
+      window.location.href = mailtoLink;
+    }
   </script>
 
-  <!-- Footer -->
-  <footer class="mt-12 bg-gray-100 py-6">
-    <div class="max-w-6xl mx-auto text-center text-gray-500 text-sm">
-      &copy; 2025 Element Logic AS. All rights reserved.
-    </div>
-  </footer>
 </body>
 </html>
