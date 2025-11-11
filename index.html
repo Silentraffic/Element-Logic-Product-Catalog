@@ -78,7 +78,7 @@
 
       <!-- Product 1 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
-        <img src="images/AS-Bins-330mm-top.jpg" alt="AutoStore Bin 330" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['images/AS-Bins-330mm-top.jpg','images/AS-Bins-330mm-longside.jpg','images/AS-Bins-330mm-shortside.jpg'])">
+        <img src="Images/AS-Bins-330mm-top.jpg" alt="AutoStore Bin 330" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/AS-Bins-330mm-top.jpg','Images/AS-Bins-330mm-longside.jpg','Images/AS-Bins-330mm-shortside.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">AutoStore Bin 330</h3>
           <p class="text-gray-600 text-sm mb-2">330 mm Polymer Compound 100% recycled</p>
@@ -93,7 +93,7 @@
 
       <!-- Product 2 -->
       <div class="bg-white shadow rounded-2xl overflow-hidden hover:shadow-lg transition">
-        <img src="images/425-BinProduct-longside.jpg" alt="AutoStore Bin 425" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['images/425-BinProduct-longside.jpg'])">
+        <img src="Images/425-BinProduct-longside.jpg" alt="AutoStore Bin 425" class="w-full h-56 object-cover cursor-pointer" onclick="openGallery(['Images/425-BinProduct-longside.jpg'])">
         <div class="p-5">
           <h3 class="text-lg font-semibold mb-2">AutoStore Bin 425</h3>
           <p class="text-gray-600 text-sm mb-2">425 mm Polymer Compound 100% recycled</p>
@@ -296,14 +296,14 @@
     let currentIndex = 0;
     let cart = [];
 
-    function openGallery(images) {
-      galleryImages = images;
+    function openGallery(Images) {
+      galleryImages = Images;
       currentIndex = 0;
       document.getElementById('galleryModal').style.display = 'block';
-      document.getElementById('galleryMain').src = images[currentIndex];
+      document.getElementById('galleryMain').src = Images[currentIndex];
       const thumbsContainer = document.getElementById('galleryThumbs');
       thumbsContainer.innerHTML = '';
-      images.forEach((src, index) => {
+      Images.forEach((src, index) => {
         const thumb = document.createElement('img');
         thumb.src = src;
         if(index === 0) thumb.classList.add('active');
